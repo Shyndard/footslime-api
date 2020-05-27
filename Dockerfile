@@ -1,4 +1,14 @@
+################################
+##         BUILD STEP         ##
+################################
+FROM maven:3.6.3-jdk-8 AS build
+WORKDIR /compile/
+COPY . .
+RUN mvn clean package -DskipTests=true
+
+################################
+##         IMAGE STEP         ##
+################################
 FROM openjdk:8-jdk-alpine
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+COPY --from=build /compile/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]

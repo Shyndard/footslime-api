@@ -1,73 +1,93 @@
 package com.shyndard.util.footslime.api.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class Match {
 
-	private UUID id;
+	private int id;
 	private Date startAt;
 	private Date endAt;
-	private int blueTeamPoint;
+	private UUID redTeamId;
+	private UUID blueTeamId;
 	private int redTeamPoint;
-	
-	public Match(Date startAt) {
-		this.id = UUID.randomUUID();
-		this.startAt = startAt;
-	}
+	private int blueTeamPoint;
+	private List<Player> playersRedTeam;
+	private List<Player> playersBlueTeam;
 
-	public UUID getId() {
+	public int getId() {
 		return id;
 	}
-	
-	public Match setId(UUID id) {
+
+	public void setId(int id) {
 		this.id = id;
-		return this;
 	}
-	
+
 	public Date getStartAt() {
 		return startAt;
 	}
-	
-	public Match setStartAt(Date startAt) {
+
+	public void setStartAt(Date startAt) {
 		this.startAt = startAt;
-		return this;
 	}
-	
+
 	public Date getEndAt() {
 		return endAt;
 	}
-	
-	public Match setEndAt(Date endAt) {
+
+	public void setEndAt(Date endAt) {
 		this.endAt = endAt;
-		return this;
 	}
-	
-	public int getBlueTeamPoint() {
-		return blueTeamPoint;
+
+	public UUID getRedTeamId() {
+		return redTeamId;
 	}
-	
-	public Match setBlueTeamPoint(int blueTeamPoint) {
-		this.blueTeamPoint = blueTeamPoint;
-		return this;
+
+	public void setRedTeamId(UUID redTeamId) {
+		this.redTeamId = redTeamId;
 	}
-	
+
+	public UUID getBlueTeamId() {
+		return blueTeamId;
+	}
+
+	public void setBlueTeamId(UUID blueTeamId) {
+		this.blueTeamId = blueTeamId;
+	}
+
 	public int getRedTeamPoint() {
 		return redTeamPoint;
 	}
-	
-	public Match setRedTeamPoint(int redTeamPoint) {
+
+	public void setRedTeamPoint(int redTeamPoint) {
 		this.redTeamPoint = redTeamPoint;
+	}
+
+	public int getBlueTeamPoint() {
+		return blueTeamPoint;
+	}
+
+	public void setBlueTeamPoint(int blueTeamPoint) {
+		this.blueTeamPoint = blueTeamPoint;
+	}
+
+	public List<Player> getPlayersRedTeam() {
+		return playersRedTeam;
+	}
+
+	public Match setPlayersRedTeam(List<Player> playersRedTeam) {
+		this.playersRedTeam = playersRedTeam;
 		return this;
 	}
 
-	public Match addPointToTeam(String team) {
-		if("red".equalsIgnoreCase(team)) {
-			this.redTeamPoint++;
-		} else if("blue".equalsIgnoreCase(team)) {
-			this.blueTeamPoint++;
-		}
+	public List<Player> getPlayersBlueTeam() {
+		return playersBlueTeam;
+	}
+
+	public Match setPlayersBlueTeam(List<Player> playersBlueTeam) {
+		this.playersBlueTeam = playersBlueTeam;
 		return this;
 	}
-	
+
 }
