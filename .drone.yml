@@ -1,0 +1,42 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+steps:
+  - name: test
+    image: maven:3.6.3-jdk-8
+    commands:
+      - mvn test
+  - name: build
+    image: maven:3.6.3-jdk-8
+    commands:
+      - mvn install -DskipTests=true
+  - name: docker
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DOCKER_USERNAME
+      password:
+        from_secret: DOCKER_PASSWORD
+      repo:
+        from_secret: DOCKER_REPOSITORY
+      tags: latest
+    depends_on: [build]
+    when:
+      branch: master
+  - name: deploy
+    image: caprover/cli-caprover:latest
+    commands:
+      - npx caprover deploy -h $CAPROVER_DOMAIN -p $CAPROVER_PASSWORD -i $DOCKER_REPOSITORY:latest -a $CAPROVER_APPNAME
+    environment:
+      CAPROVER_DOMAIN:
+        from_secret: CAPROVER_DOMAIN
+      CAPROVER_APPNAME:
+        from_secret: CAPROVER_APPNAME
+      CAPROVER_PASSWORD:
+        from_secret: CAPROVER_PASSWORD
+      DOCKER_REPOSITORY:
+        from_secret: DOCKER_REPOSITORY
+    depends_on: [docker]
+    when:
+      branch: master
