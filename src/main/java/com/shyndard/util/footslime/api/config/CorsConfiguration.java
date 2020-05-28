@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfiguration {
 
-	@Value("${allowed-host}")
+	@Value("#{'${allowed-host}'.split(',')}")
 	private String[] allowedHosts;
 
 	@Bean
