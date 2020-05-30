@@ -21,6 +21,7 @@ public class TeamService {
 			teamDao.create(team, dto.getUsernames());
 			return teamDao.getById(team.getId());
 		} catch (final Exception ex) {
+			ex.printStackTrace();
 			return Optional.empty();
 		}
 	}
