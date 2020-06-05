@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shyndard.util.footslime.api.dao.PlayerDao;
 import com.shyndard.util.footslime.api.entity.Player;
-import com.shyndard.util.footslime.api.service.TeamService;
+import com.shyndard.util.footslime.api.entity.dto.UserCreationDto;
 import com.shyndard.util.footslime.api.service.PlayerService;
+import com.shyndard.util.footslime.api.service.TeamService;
 
 @RestController
 public class PlayerController {
@@ -49,9 +50,8 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/players")
-	public ResponseEntity<?> create(@RequestBody String username,
-			@RequestParam(defaultValue = "autocreateteam") boolean autocreateteam) {
-		final Optional<Player> player = playerService.create(username);
+	public ResponseEntity<?> create(@RequestBody UserCreationDto dto, @RequestParam(defaultValue = "autocreateteam") boolean autocreateteam) {
+		final Optional<Player> player = playerService.create(dto);
 		if (player.isPresent()) {
 			if (autocreateteam) {
 				teamService.autoCreateTeam();

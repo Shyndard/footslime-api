@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.shyndard.util.footslime.api.dao.PlayerDao;
 import com.shyndard.util.footslime.api.entity.Player;
+import com.shyndard.util.footslime.api.entity.dto.UserCreationDto;
 
 @Service
 public class PlayerService {
@@ -14,10 +15,10 @@ public class PlayerService {
 	@Autowired
 	private PlayerDao playerDao;
 
-	public Optional<Player> create(String username) {
+	public Optional<Player> create(UserCreationDto dto) {
 		try {
-			playerDao.create(username, null);
-			return playerDao.getByName(username);
+			playerDao.create(dto.getName(), null);
+			return playerDao.getByName(dto.getName());
 		} catch (final Exception ex) {
 			ex.printStackTrace();
 			return Optional.empty();
