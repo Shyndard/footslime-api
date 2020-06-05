@@ -9,16 +9,27 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shyndard.util.footslime.api.dao.PlayerDao;
 import com.shyndard.util.footslime.api.entity.Player;
+import com.shyndard.util.footslime.api.service.TeamService;
+import com.shyndard.util.footslime.api.service.PlayerService;
 
 @RestController
 public class PlayerController {
 
 	@Autowired
 	private PlayerDao playerDao;
+
+	@Autowired
+	private PlayerService playerService;
+
+	@Autowired
+	private TeamService teamService;
 
 	// Get all match
 	@GetMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,6 +45,20 @@ public class PlayerController {
 			return new ResponseEntity<>(player.get(), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+	}
+
+	@PostMapping(value = "/players")
+	public ResponseEntity<?> create(@RequestBody String username,
+			@RequestParam(defaultValue = "autocreateteam") boolean autocreateteam) {
+		final Optional<Player> player = playerService.create(username);
+		if (player.isPresent()) {
+			if (autocreateteam) {
+				teamService.autoCreateTeam();
+			}
+			return new ResponseEntity<>(player.get(), HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 	}
 }
