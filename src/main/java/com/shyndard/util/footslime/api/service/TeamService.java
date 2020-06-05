@@ -37,7 +37,7 @@ public class TeamService {
 	public boolean autoCreateTeam() {
 		final List<Player> players = playerDao.getWithNoTeam();
 		boolean created = false;
-		if (players.size() == 4) {
+		if (players.size() == 3) {
 			try {
 				final Team team = new Team(generateRandomTeamName());
 				teamDao.create(team, new ArrayList<>());
@@ -53,6 +53,8 @@ public class TeamService {
 	}
 
 	private String generateRandomTeamName() {
-		return new Random().ints(97, 122 + 1).limit(5).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString() + " team";
+		return new Random().ints(97, 122 + 1).limit(5)
+				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString()
+				+ " team";
 	}
 }
