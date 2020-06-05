@@ -25,12 +25,21 @@ public class PlayerDao {
 		return jdbcTemplate.query("SELECT * FROM player WHERE team = ?", new Object[] { teamId }, new PlayerMapper());
 	}
 
+	public List<Player> getWithNoTeam() {
+		return jdbcTemplate.query("SELECT * FROM player WHERE team IS NULL", new PlayerMapper());
+	}
+
 	public Optional<Player> getByName(String username) {
-		return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM team WHERE name ILIKE ?", new Object[] { username }, new PlayerMapper()));
+		return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM player WHERE name ILIKE ?",
+				new Object[] { username }, new PlayerMapper()));
 	}
 
 	public void create(String username, UUID team) {
 		jdbcTemplate.update("INSERT INTO player (name, team) VALUES (?, ?)", username, team);
+	}
+
+	public void updateTeam(Player player, UUID team) {
+		jdbcTemplate.update("UPDATE player SET team = ? WHERE name ILIKE ?", team, player.getName());
 	}
 
 }
