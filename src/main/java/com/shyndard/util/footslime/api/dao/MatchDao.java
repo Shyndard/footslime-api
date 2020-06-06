@@ -23,25 +23,7 @@ public class MatchDao {
 
 	public List<Match> getAll() {
 		return jdbcTemplate.query("SELECT * FROM match", new MatchMapper()).stream().map(match -> {
-			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()));
-		}).collect(Collectors.toList());
-	}
-
-	public List<Match> getInProgress() {
-		return jdbcTemplate.query("SELECT * FROM match WHERE start_at IS NOT NULL AND end_at IS NULL", new MatchMapper()).stream().map(match -> {
-			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()));
-		}).collect(Collectors.toList());
-	}
-
-	public List<Match> getNotStarted() {
-		return jdbcTemplate.query("SELECT * FROM match WHERE start_at IS NULL", new MatchMapper()).stream().map(match -> {
-			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()));
-		}).collect(Collectors.toList());
-	}
-
-	public List<Match> getEnded() {
-		return jdbcTemplate.query("SELECT * FROM match WHERE end_at IS NOT NULL", new MatchMapper()).stream().map(match -> {
-			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()));
+			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId())).setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
 		}).collect(Collectors.toList());
 	}
 
@@ -50,11 +32,11 @@ public class MatchDao {
 	}
 
 	public int updateStarting(int id) {
-		return jdbcTemplate.update("UPDATE match SET start_at = CURRENT_TIMESTAMP() WHERE id = ?", id);
+		return jdbcTemplate.update("UPDATE match SET start_at = CURRENT_TIMESTAMP WHERE id = ?", id);
 	}
 
 	public int updateEnding(int id) {
-		return jdbcTemplate.update("UPDATE match SET start_at = CURRENT_TIMESTAMP() WHERE id = ?", id);
+		return jdbcTemplate.update("UPDATE match SET end_at = CURRENT_TIMESTAMP WHERE id = ?", id);
 	}
 
 	public int updateRedPoint(int id, int value) {

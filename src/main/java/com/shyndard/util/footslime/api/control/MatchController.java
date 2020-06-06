@@ -33,23 +33,6 @@ public class MatchController {
 		return matchDao.getAll();
 	}
 
-	// Get all match started
-	@GetMapping(value = "/matchs?inprogress=true", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Match> getAllInProgress() {
-		return matchDao.getInProgress();
-	}
-
-	@GetMapping(value = "/matchs?waitingtostart=true", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Match> getAllWaitingToStart() {
-		return matchDao.getNotStarted();
-	}
-
-	// Get all match ended
-	@GetMapping(value = "/matchs?ended=true", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Match> getAllEnded() {
-		return matchDao.getEnded();
-	}
-
 	// Start a match
 	@PutMapping(value = "/matchs/{matchId}/start", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Match> startMatch(@PathVariable int matchId) {
@@ -75,9 +58,9 @@ public class MatchController {
 	}
 
 	// A team score
-	@PutMapping(value = "/matchs/{matchId}/score/{teamColor}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Match> teamScore(@PathVariable int matchId, @PathVariable String teamColor, @RequestBody SimpleEntry<String, Integer> json) {
-		final Optional<Match> match = matchService.teamScore(matchId, teamColor, json);
+	@PutMapping(value = "/matchs/{matchId}/score/{teamColor}/{value}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Match> teamScore(@PathVariable int matchId, @PathVariable String teamColor, @PathVariable int value) {
+		final Optional<Match> match = matchService.teamScore(matchId, teamColor, value);
 		if (match.isPresent()) {
 			return new ResponseEntity<>(match.get(), HttpStatus.OK);
 		} else {
