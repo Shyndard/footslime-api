@@ -17,8 +17,10 @@ public class MatchMapper implements RowMapper<Match> {
 		match.setEndAt(rs.getTimestamp("end_at"));
 		match.setRedTeamId(rs.getObject("red_team", java.util.UUID.class));
 		match.setRedTeamPoint(rs.getInt("red_point"));
+		match.setRedTeamName(rs.getString("red_team_name"));
 		match.setBlueTeamId(rs.getObject("blue_team", java.util.UUID.class));
 		match.setBlueTeamPoint(rs.getInt("blue_point"));
+		match.setBlueTeamName(rs.getString("blue_team_name"));
 		return match;
 	}
 

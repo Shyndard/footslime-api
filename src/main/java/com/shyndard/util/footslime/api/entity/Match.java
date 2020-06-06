@@ -11,6 +11,8 @@ public class Match {
 	private Date endAt;
 	private UUID redTeamId;
 	private UUID blueTeamId;
+	private String blueTeamName;
+	private String redTeamName;
 	private int redTeamPoint;
 	private int blueTeamPoint;
 	private List<Player> playersRedTeam;
@@ -54,6 +56,22 @@ public class Match {
 
 	public void setBlueTeamId(UUID blueTeamId) {
 		this.blueTeamId = blueTeamId;
+	}
+
+	public String getBlueTeamName() {
+		return blueTeamName;
+	}
+
+	public void setBlueTeamName(String blueTeamName) {
+		this.blueTeamName = blueTeamName;
+	}
+
+	public String getRedTeamName() {
+		return redTeamName;
+	}
+
+	public void setRedTeamName(String redTeamName) {
+		this.redTeamName = redTeamName;
 	}
 
 	public int getRedTeamPoint() {

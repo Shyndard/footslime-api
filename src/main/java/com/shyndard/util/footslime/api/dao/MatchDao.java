@@ -22,7 +22,7 @@ public class MatchDao {
 	private PlayerDao playerDao;
 
 	public List<Match> getAll() {
-		return jdbcTemplate.query("SELECT * FROM match", new MatchMapper()).stream().map(match -> {
+		return jdbcTemplate.query("SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team", new MatchMapper()).stream().map(match -> {
 			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId())).setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
 		}).collect(Collectors.toList());
 	}
