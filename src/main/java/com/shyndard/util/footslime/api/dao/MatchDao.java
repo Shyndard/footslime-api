@@ -66,6 +66,16 @@ public class MatchDao {
 				}).collect(Collectors.toList());
 	}
 
+	public Optional<Match> getById(int matchId) {
+		final List<Match> list = jdbcTemplate.query(
+				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.id = ?",
+				new Object[] { matchId }, new MatchMapper()).stream().map(match -> {
+					return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()))
+							.setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
+				}).collect(Collectors.toList());
+		return list.size() == 1 ? Optional.of(list.get(0)) : Optional.empty();
+	}
+
 	public int create(UUID blueTeamId, UUID redTeamId) {
 		return jdbcTemplate.update("INSERT INTO match (id, blue_team, red_team) VALUES (?, ?, ?)", UUID.randomUUID(),
 				blueTeamId, redTeamId);
@@ -90,12 +100,5 @@ public class MatchDao {
 	public int reset(int id) {
 		return jdbcTemplate
 				.update("UPDATE match SET blue_point = 0, red_point = 0, start_at = 0, end_at = 0 WHERE id = ?", id);
-	}
-
-	public Optional<Match> getById(int matchId) {
-		final List<Match> list = jdbcTemplate.query(
-				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.id = ?",
-				new Object[] { matchId }, new MatchMapper());
-		return list.size() == 1 ? Optional.of(list.get(0)) : Optional.empty();
 	}
 }
