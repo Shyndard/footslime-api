@@ -28,15 +28,22 @@ public class MatchController {
 
 	// Get all match
 	@GetMapping(value = "/matchs", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Match> getAll(@RequestParam(required = false) Boolean inprogress) {
-		if(inprogress == null) {
-			return matchDao.getAll();
-		} else {
-			if(inprogress) {
+	public List<Match> getAll(@RequestParam(required = false) Boolean inprogress,
+			@RequestParam(required = false) Boolean started) {
+		if (inprogress != null) {
+			if (inprogress) {
 				return matchDao.getInProgress();
 			} else {
 				return matchDao.getNotInProgress();
 			}
+		} else if (started != null) {
+			if (started) {
+				return matchDao.getStarted();
+			} else {
+				return matchDao.getNotStarted();
+			}
+		} else {
+			return matchDao.getAll();
 		}
 	}
 
@@ -66,7 +73,8 @@ public class MatchController {
 
 	// A team score
 	@PutMapping(value = "/matchs/{matchId}/score/{teamColor}/{value}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Match> teamScore(@PathVariable int matchId, @PathVariable String teamColor, @PathVariable int value) {
+	public ResponseEntity<Match> teamScore(@PathVariable int matchId, @PathVariable String teamColor,
+			@PathVariable int value) {
 		final Optional<Match> match = matchService.teamScore(matchId, teamColor, value);
 		if (match.isPresent()) {
 			return new ResponseEntity<>(match.get(), HttpStatus.OK);

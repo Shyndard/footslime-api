@@ -22,25 +22,53 @@ public class MatchDao {
 	private PlayerDao playerDao;
 
 	public List<Match> getAll() {
-		return jdbcTemplate.query("SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team", new MatchMapper()).stream().map(match -> {
-			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId())).setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
-		}).collect(Collectors.toList());
+		return jdbcTemplate.query(
+				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team",
+				new MatchMapper()).stream().map(match -> {
+					return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()))
+							.setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
+				}).collect(Collectors.toList());
 	}
 
 	public List<Match> getInProgress() {
-		return jdbcTemplate.query("SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.start_at IS NOT NULL AND m.end_at IS NULL", new MatchMapper()).stream().map(match -> {
-			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId())).setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
-		}).collect(Collectors.toList());
+		return jdbcTemplate.query(
+				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.start_at IS NOT NULL AND m.end_at IS NULL",
+				new MatchMapper()).stream().map(match -> {
+					return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()))
+							.setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
+				}).collect(Collectors.toList());
 	}
 
 	public List<Match> getNotInProgress() {
-		return jdbcTemplate.query("SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.start_at IS NULL OR m.end_at IS NOT NULL", new MatchMapper()).stream().map(match -> {
-			return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId())).setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
-		}).collect(Collectors.toList());
+		return jdbcTemplate.query(
+				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.start_at IS NULL OR m.end_at IS NOT NULL",
+				new MatchMapper()).stream().map(match -> {
+					return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()))
+							.setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
+				}).collect(Collectors.toList());
+	}
+
+	public List<Match> getStarted() {
+		return jdbcTemplate.query(
+				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.start_at IS NOT NULL",
+				new MatchMapper()).stream().map(match -> {
+					return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()))
+							.setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
+				}).collect(Collectors.toList());
+	}
+
+	public List<Match> getNotStarted() {
+		return jdbcTemplate.query(
+				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.start_at IS NULL",
+				new MatchMapper()).stream().map(match -> {
+					return match.setPlayersRedTeam(playerDao.getByTeam(match.getRedTeamId()))
+							.setPlayersBlueTeam(playerDao.getByTeam(match.getBlueTeamId()));
+				}).collect(Collectors.toList());
 	}
 
 	public int create(UUID blueTeamId, UUID redTeamId) {
-		return jdbcTemplate.update("INSERT INTO match (id, blue_team, red_team) VALUES (?, ?, ?)", UUID.randomUUID(), blueTeamId, redTeamId);
+		return jdbcTemplate.update("INSERT INTO match (id, blue_team, red_team) VALUES (?, ?, ?)", UUID.randomUUID(),
+				blueTeamId, redTeamId);
 	}
 
 	public int updateStarting(int id) {
@@ -60,11 +88,14 @@ public class MatchDao {
 	}
 
 	public int reset(int id) {
-		return jdbcTemplate.update("UPDATE match SET blue_point = 0, red_point = 0, start_at = 0, end_at = 0 WHERE id = ?", id);
+		return jdbcTemplate
+				.update("UPDATE match SET blue_point = 0, red_point = 0, start_at = 0, end_at = 0 WHERE id = ?", id);
 	}
 
 	public Optional<Match> getById(int matchId) {
-		final List<Match> list = jdbcTemplate.query("SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.id = ?", new Object[] { matchId }, new MatchMapper());
+		final List<Match> list = jdbcTemplate.query(
+				"SELECT m.*, tb.name AS blue_team_name, tr.name AS red_team_name FROM match as m JOIN team as tb ON tb.id = blue_team JOIN team as tr ON tr.id = red_team WHERE m.id = ?",
+				new Object[] { matchId }, new MatchMapper());
 		return list.size() == 1 ? Optional.of(list.get(0)) : Optional.empty();
 	}
 }

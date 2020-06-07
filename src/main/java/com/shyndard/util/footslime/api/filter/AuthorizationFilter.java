@@ -22,15 +22,15 @@ public class AuthorizationFilter implements Filter {
 
     @Autowired
     private TokenDao tokenDao;
-    
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         String authorization = req.getHeader("Authorization");
-        if(req.getRequestURI().startsWith("/matchs/") && authorization != null && authorization.startsWith("Bearer")) {
-            if(!tokenDao.isValid(authorization.split(" ")[1])) {
+        if (req.getRequestURI().startsWith("/matchs/") && authorization != null && authorization.startsWith("Bearer")) {
+            if (!tokenDao.isValid(authorization.split(" ")[1])) {
                 res.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 PrintWriter writer = res.getWriter();
                 writer.write("Bad token.");
