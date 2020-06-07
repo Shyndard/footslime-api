@@ -1,6 +1,5 @@
 package com.shyndard.util.footslime.api.control;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shyndard.util.footslime.api.dao.MatchDao;
@@ -29,8 +28,16 @@ public class MatchController {
 
 	// Get all match
 	@GetMapping(value = "/matchs", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Match> getAll() {
-		return matchDao.getAll();
+	public List<Match> getAll(@RequestParam(required = false) Boolean inprogress) {
+		if(inprogress == null) {
+			return matchDao.getAll();
+		} else {
+			if(inprogress) {
+				return matchDao.getInProgress();
+			} else {
+				return matchDao.getNotInProgress();
+			}
+		}
 	}
 
 	// Start a match
