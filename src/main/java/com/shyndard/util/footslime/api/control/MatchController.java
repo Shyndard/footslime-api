@@ -47,6 +47,17 @@ public class MatchController {
 		}
 	}
 
+	// Get by id
+	@GetMapping(value = "/matchs/{matchId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getBydId(@PathVariable int matchId) {
+		final Optional<Match> match = matchDao.getById(matchId);
+		if (match.isPresent()) {
+			return new ResponseEntity<>(match.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+	}
+
 	// Start a match
 	@PutMapping(value = "/matchs/{matchId}/start", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Match> startMatch(@PathVariable int matchId) {
